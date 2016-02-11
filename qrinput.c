@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 #include <stdio.h>
@@ -108,12 +108,12 @@ static QRinput_List *QRinput_List_dup(QRinput_List *entry)
  * Input Data
  *****************************************************************************/
 
-QRinput *QRinput_new(void)
+__declspec(dllexport) QRinput *QRinput_new(void)
 {
 	return QRinput_new2(0, QR_ECLEVEL_L);
 }
 
-QRinput *QRinput_new2(int version, QRecLevel level)
+__declspec(dllexport) QRinput *QRinput_new2(int version, QRecLevel level)
 {
 	QRinput *input;
 
@@ -135,7 +135,7 @@ QRinput *QRinput_new2(int version, QRecLevel level)
 	return input;
 }
 
-QRinput *QRinput_newMQR(int version, QRecLevel level)
+__declspec(dllexport) QRinput *QRinput_newMQR(int version, QRecLevel level)
 {
 	QRinput *input;
 
@@ -154,12 +154,12 @@ INVALID:
 	return NULL;
 }
 
-int QRinput_getVersion(QRinput *input)
+__declspec(dllexport) int QRinput_getVersion(QRinput *input)
 {
 	return input->version;
 }
 
-int QRinput_setVersion(QRinput *input, int version)
+__declspec(dllexport) int QRinput_setVersion(QRinput *input, int version)
 {
 	if(input->mqr || version < 0 || version > QRSPEC_VERSION_MAX) {
 		errno = EINVAL;
@@ -171,12 +171,12 @@ int QRinput_setVersion(QRinput *input, int version)
 	return 0;
 }
 
-QRecLevel QRinput_getErrorCorrectionLevel(QRinput *input)
+__declspec(dllexport) QRecLevel QRinput_getErrorCorrectionLevel(QRinput *input)
 {
 	return input->level;
 }
 
-int QRinput_setErrorCorrectionLevel(QRinput *input, QRecLevel level)
+__declspec(dllexport) int QRinput_setErrorCorrectionLevel(QRinput *input, QRecLevel level)
 {
 	if(input->mqr || level > QR_ECLEVEL_H) {
 		errno = EINVAL;
@@ -188,7 +188,7 @@ int QRinput_setErrorCorrectionLevel(QRinput *input, QRecLevel level)
 	return 0;
 }
 
-int QRinput_setVersionAndErrorCorrectionLevel(QRinput *input, int version, QRecLevel level)
+__declspec(dllexport) int QRinput_setVersionAndErrorCorrectionLevel(QRinput *input, int version, QRecLevel level)
 {
 	if(input->mqr) {
 		if(version <= 0 || version > MQRSPEC_VERSION_MAX) goto INVALID;
@@ -208,7 +208,7 @@ INVALID:
 	return -1;
 }
 
-static void QRinput_appendEntry(QRinput *input, QRinput_List *entry)
+__declspec(dllexport) void QRinput_appendEntry(QRinput *input, QRinput_List *entry)
 {
 	if(input->tail == NULL) {
 		input->head = entry;
@@ -220,7 +220,7 @@ static void QRinput_appendEntry(QRinput *input, QRinput_List *entry)
 	entry->next = NULL;
 }
 
-int QRinput_append(QRinput *input, QRencodeMode mode, int size, const unsigned char *data)
+__declspec(dllexport) int QRinput_append(QRinput *input, QRencodeMode mode, int size, const unsigned char *data)
 {
 	QRinput_List *entry;
 
@@ -273,7 +273,7 @@ __STATIC int QRinput_insertStructuredAppendHeader(QRinput *input, int size, int 
 	return 0;
 }
 
-int QRinput_appendECIheader(QRinput *input, unsigned int ecinum)
+__declspec(dllexport) int QRinput_appendECIheader(QRinput *input, unsigned int ecinum)
 {
 	unsigned char data[4];
 
@@ -291,7 +291,7 @@ int QRinput_appendECIheader(QRinput *input, unsigned int ecinum)
 	return QRinput_append(input, QR_MODE_ECI, 4, data);
 }
 
-void QRinput_free(QRinput *input)
+__declspec(dllexport) void QRinput_free(QRinput *input)
 {
 	QRinput_List *list, *next;
 
@@ -816,7 +816,7 @@ static int QRinput_encodeModeECI(QRinput_List *entry, BitStream *bstream)
  * Validation
  *****************************************************************************/
 
-int QRinput_check(QRencodeMode mode, int size, const unsigned char *data)
+__declspec(dllexport) int QRinput_check(QRencodeMode mode, int size, const unsigned char *data)
 {
 	if((mode == QR_MODE_FNC1FIRST && size < 0) || size <= 0) return -1;
 
@@ -1359,7 +1359,7 @@ static void QRinput_InputList_freeEntry(QRinput_InputList *entry)
 	}
 }
 
-QRinput_Struct *QRinput_Struct_new(void)
+__declspec(dllexport) QRinput_Struct *QRinput_Struct_new(void)
 {
 	QRinput_Struct *s;
 
@@ -1374,12 +1374,12 @@ QRinput_Struct *QRinput_Struct_new(void)
 	return s;
 }
 
-void QRinput_Struct_setParity(QRinput_Struct *s, unsigned char parity)
+__declspec(dllexport) void QRinput_Struct_setParity(QRinput_Struct *s, unsigned char parity)
 {
 	s->parity = (int)parity;
 }
 
-int QRinput_Struct_appendInput(QRinput_Struct *s, QRinput *input)
+__declspec(dllexport) int QRinput_Struct_appendInput(QRinput_Struct *s, QRinput *input)
 {
 	QRinput_InputList *e;
 
@@ -1403,7 +1403,7 @@ int QRinput_Struct_appendInput(QRinput_Struct *s, QRinput *input)
 	return s->size;
 }
 
-void QRinput_Struct_free(QRinput_Struct *s)
+__declspec(dllexport) void QRinput_Struct_free(QRinput_Struct *s)
 {
 	QRinput_InputList *list, *next;
 	
@@ -1471,7 +1471,7 @@ __STATIC int QRinput_splitEntry(QRinput_List *entry, int bytes)
 	return 0;
 }
 
-QRinput_Struct *QRinput_splitQRinputToStruct(QRinput *input)
+__declspec(dllexport) QRinput_Struct *QRinput_splitQRinputToStruct(QRinput *input)
 {
 	QRinput *p = NULL;
 	QRinput_Struct *s = NULL;
@@ -1576,7 +1576,7 @@ ABORT:
 	return NULL;
 }
 
-int QRinput_Struct_insertStructuredAppendHeaders(QRinput_Struct *s)
+__declspec(dllexport) int QRinput_Struct_insertStructuredAppendHeaders(QRinput_Struct *s)
 {
 	int i;
 	QRinput_InputList *list;
@@ -1604,7 +1604,7 @@ int QRinput_Struct_insertStructuredAppendHeaders(QRinput_Struct *s)
  * Extended encoding mode (FNC1 and ECI)
  *****************************************************************************/
 
-int QRinput_setFNC1First(QRinput *input)
+__declspec(dllexport) int QRinput_setFNC1First(QRinput *input)
 {
 	if(input->mqr) {
 		errno = EINVAL;
@@ -1615,7 +1615,7 @@ int QRinput_setFNC1First(QRinput *input)
 	return 0;
 }
 
-int QRinput_setFNC1Second(QRinput *input, unsigned char appid)
+__declspec(dllexport) int QRinput_setFNC1Second(QRinput *input, unsigned char appid)
 {
 	if(input->mqr) {
 		errno = EINVAL;

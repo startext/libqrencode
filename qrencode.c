@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 #include <stdio.h>
@@ -422,7 +422,7 @@ __STATIC QRcode *QRcode_new(int version, int width, unsigned char *data)
 	return qrcode;
 }
 
-void QRcode_free(QRcode *qrcode)
+__declspec(dllexport) void QRcode_free(QRcode *qrcode)
 {
 	if(qrcode != NULL) {
 		free(qrcode->data);
@@ -584,7 +584,7 @@ EXIT:
 	return qrcode;
 }
 
-QRcode *QRcode_encodeInput(QRinput *input)
+__declspec(dllexport) QRcode *QRcode_encodeInput(QRinput *input)
 {
 	if(input->mqr) {
 		return QRcode_encodeMaskMQR(input, -1);
@@ -626,12 +626,12 @@ static QRcode *QRcode_encodeStringReal(const char *string, int version, QRecLeve
 	return code;
 }
 
-QRcode *QRcode_encodeString(const char *string, int version, QRecLevel level, QRencodeMode hint, int casesensitive)
+__declspec(dllexport) QRcode *QRcode_encodeString(const char *string, int version, QRecLevel level, QRencodeMode hint, int casesensitive)
 {
 	return QRcode_encodeStringReal(string, version, level, 0, hint, casesensitive);
 }
 
-QRcode *QRcode_encodeStringMQR(const char *string, int version, QRecLevel level, QRencodeMode hint, int casesensitive)
+__declspec(dllexport) QRcode *QRcode_encodeStringMQR(const char *string, int version, QRecLevel level, QRencodeMode hint, int casesensitive)
 {
 	return QRcode_encodeStringReal(string, version, level, 1, hint, casesensitive);
 }
@@ -665,12 +665,12 @@ static QRcode *QRcode_encodeDataReal(const unsigned char *data, int length, int 
 	return code;
 }
 
-QRcode *QRcode_encodeData(int size, const unsigned char *data, int version, QRecLevel level)
+__declspec(dllexport) QRcode *QRcode_encodeData(int size, const unsigned char *data, int version, QRecLevel level)
 {
 	return QRcode_encodeDataReal(data, size, version, level, 0);
 }
 
-QRcode *QRcode_encodeString8bit(const char *string, int version, QRecLevel level)
+__declspec(dllexport) QRcode *QRcode_encodeString8bit(const char *string, int version, QRecLevel level)
 {
 	if(string == NULL) {
 		errno = EINVAL;
@@ -679,12 +679,12 @@ QRcode *QRcode_encodeString8bit(const char *string, int version, QRecLevel level
 	return QRcode_encodeDataReal((unsigned char *)string, strlen(string), version, level, 0);
 }
 
-QRcode *QRcode_encodeDataMQR(int size, const unsigned char *data, int version, QRecLevel level)
+__declspec(dllexport) QRcode *QRcode_encodeDataMQR(int size, const unsigned char *data, int version, QRecLevel level)
 {
 	return QRcode_encodeDataReal(data, size, version, level, 1);
 }
 
-QRcode *QRcode_encodeString8bitMQR(const char *string, int version, QRecLevel level)
+__declspec(dllexport) QRcode *QRcode_encodeString8bitMQR(const char *string, int version, QRecLevel level)
 {
 	if(string == NULL) {
 		errno = EINVAL;
@@ -719,7 +719,7 @@ static void QRcode_List_freeEntry(QRcode_List *entry)
 	}
 }
 
-void QRcode_List_free(QRcode_List *qrlist)
+__declspec(dllexport) void QRcode_List_free(QRcode_List *qrlist)
 {
 	QRcode_List *list = qrlist, *next;
 
@@ -730,7 +730,7 @@ void QRcode_List_free(QRcode_List *qrlist)
 	}
 }
 
-int QRcode_List_size(QRcode_List *qrlist)
+__declspec(dllexport) int QRcode_List_size(QRcode_List *qrlist)
 {
 	QRcode_List *list = qrlist;
 	int size = 0;
@@ -757,7 +757,7 @@ static unsigned char QRcode_parity(const char *str, int size)
 }
 #endif
 
-QRcode_List *QRcode_encodeInputStructured(QRinput_Struct *s)
+__declspec(dllexport) QRcode_List *QRcode_encodeInputStructured(QRinput_Struct *s)
 {
 	QRcode_List *head = NULL;
 	QRcode_List *tail = NULL;
@@ -839,11 +839,11 @@ static QRcode_List *QRcode_encodeDataStructuredReal(
 	return codes;
 }
 
-QRcode_List *QRcode_encodeDataStructured(int size, const unsigned char *data, int version, QRecLevel level) {
+__declspec(dllexport) QRcode_List *QRcode_encodeDataStructured(int size, const unsigned char *data, int version, QRecLevel level) {
 	return QRcode_encodeDataStructuredReal(size, data, version, level, 1, QR_MODE_NUL, 0);
 }
 
-QRcode_List *QRcode_encodeString8bitStructured(const char *string, int version, QRecLevel level) {
+__declspec(dllexport) QRcode_List *QRcode_encodeString8bitStructured(const char *string, int version, QRecLevel level) {
 	if(string == NULL) {
 		errno = EINVAL;
 		return NULL;
@@ -851,7 +851,7 @@ QRcode_List *QRcode_encodeString8bitStructured(const char *string, int version, 
 	return QRcode_encodeDataStructured(strlen(string), (unsigned char *)string, version, level);
 }
 
-QRcode_List *QRcode_encodeStringStructured(const char *string, int version, QRecLevel level, QRencodeMode hint, int casesensitive)
+__declspec(dllexport) QRcode_List *QRcode_encodeStringStructured(const char *string, int version, QRecLevel level, QRencodeMode hint, int casesensitive)
 {
 	if(string == NULL) {
 		errno = EINVAL;
@@ -864,7 +864,7 @@ QRcode_List *QRcode_encodeStringStructured(const char *string, int version, QRec
  * System utilities
  *****************************************************************************/
 
-void QRcode_APIVersion(int *major_version, int *minor_version, int *micro_version)
+__declspec(dllexport) void QRcode_APIVersion(int *major_version, int *minor_version, int *micro_version)
 {
 	if(major_version != NULL) {
 		*major_version = MAJOR_VERSION;
@@ -877,7 +877,7 @@ void QRcode_APIVersion(int *major_version, int *minor_version, int *micro_versio
 	}
 }
 
-char *QRcode_APIVersionString(void)
+__declspec(dllexport) char *QRcode_APIVersionString(void)
 {
 	return VERSION;
 }

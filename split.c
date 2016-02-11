@@ -25,7 +25,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 #include <stdlib.h>
@@ -39,7 +39,7 @@
 #define isdigit(__c__) ((unsigned char)((signed char)(__c__) - '0') < 10)
 #define isalnum(__c__) (QRinput_lookAnTable(__c__) >= 0)
 
-#if !HAVE_STRDUP
+#ifndef HAVE_STRDUP
 #undef strdup
 char *strdup(const char *s)
 {
